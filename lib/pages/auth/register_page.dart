@@ -15,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool _isLoading = false;
+  String PhoneNumber = "";
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
@@ -94,6 +95,27 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
+                        // obscureText: true,
+                        decoration: textInputDecoration.copyWith(
+                          labelText: "Phone Number",
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        validator: (val) {
+                          if (val!.length < 10) {
+                            return "PhoneNumber must be at least 6 characters";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onChanged: (val) {
+                          PhoneNumber = val;
+                        },
+                      ),
+                      const SizedBox(height: 15),
+                      TextFormField(
                         obscureText: true,
                         decoration: textInputDecoration.copyWith(
                           labelText: "Password",
@@ -169,16 +191,14 @@ class _RegisterPageState extends State<RegisterPage> {
       });
 
       bool success = await authService.registerUserWithEmailandPassword(
-        fullName,
-        email,
-        password,
-      );
+          fullName, email, password, PhoneNumber);
 
       if (success) {
         // HomePage
         await HelperFunctions.SaveUserLoggedInStatus(true);
         await HelperFunctions.SaveUserName(fullName);
         await HelperFunctions.SaveUserEmail(email);
+        await HelperFunctions.SaveUserPhone(PhoneNumber);
         nextScreenReplace(context, HomePage());
         // Registration successful, handle the next steps
       } else {

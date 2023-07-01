@@ -159,6 +159,7 @@ class _LoginPageState extends State<LoginPage> {
         await HelperFunctions.SaveUserLoggedInStatus(true);
         await HelperFunctions.SaveUserName(snapshot.docs[0]['fullName']);
         await HelperFunctions.SaveUserEmail(email);
+        await HelperFunctions.SaveUserPhone(snapshot.docs[0]['PhoneNumber']);
         nextScreenReplace(context, HomePage());
         // Registration successful, handle the next steps
       } else {

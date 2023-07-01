@@ -3,7 +3,9 @@ import 'package:chatapp/pages/Search_page.dart';
 import 'package:chatapp/pages/auth/login_page.dart';
 import 'package:chatapp/pages/profile_page.dart';
 import 'package:chatapp/service/auth_service.dart';
+import 'package:chatapp/service/database_service.dart';
 import 'package:chatapp/widgets/Widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   String name = "";
   String email = "";
   Stream? groups;
+  String PhoneNumber = "";
   AuthService authService = new AuthService();
   @override
   void initState() {
@@ -33,6 +36,19 @@ class _HomePageState extends State<HomePage> {
     await HelperFunctions.getUseremail().then((value) {
       setState(() {
         email = value;
+      });
+    });
+    await HelperFunctions.getUserNumber().then((value) {
+      setState(() {
+        PhoneNumber = value;
+      });
+    });
+    //Getting All the user in stream
+    await DataBaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+        .GetUserGroup()
+        .then((value) {
+      setState(() {
+        groups = value;
       });
     });
   }
@@ -98,6 +114,7 @@ class _HomePageState extends State<HomePage> {
                     Profile_page(
                       name: name,
                       email: email,
+                      phoneNumber: PhoneNumber,
                     ));
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -168,8 +185,73 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  popupDailog(BuildContext context) {}
+  popupDailog(BuildContext context) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "Create a Groups",
+              textAlign: TextAlign.left,
+            ),
+            content: Column(
+              children: [],
+            ),
+          );
+        });
+  }
+
   groupList() {
-    return;
+    return StreamBuilder(
+        stream: groups,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data['groups'] != null) {
+              if (snapshot.data['groups'].length > 0) {
+                return Text("Hellp");
+              } else {
+                return NoGroupWidget();
+              }
+            } else {
+              return NoGroupWidget();
+            }
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+            );
+          }
+        });
+  }
+
+  NoGroupWidget() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                popupDailog(context);
+              },
+              child: Icon(
+                Icons.add_circle,
+                color: Colors.grey[700],
+                size: 75,
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              "You've not joined any groups, tap on add icon to create a group or you can also search from top search button.",
+              textAlign: TextAlign.center,
+              style: TextStyle(),
+            )
+          ]),
+    );
   }
 }

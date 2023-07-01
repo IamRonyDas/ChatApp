@@ -7,7 +7,12 @@ import 'package:flutter/material.dart';
 class Profile_page extends StatefulWidget {
   String name;
   String email;
-  Profile_page({super.key, required this.email, required this.name});
+  String phoneNumber;
+  Profile_page(
+      {super.key,
+      required this.email,
+      required this.name,
+      required this.phoneNumber});
 
   @override
   State<Profile_page> createState() => _Profile_pageState();
@@ -161,6 +166,19 @@ class _Profile_pageState extends State<Profile_page> {
           ),
           Divider(
             height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "PhoneNumber",
+                style: TextStyle(fontSize: 17),
+              ),
+              Text(
+                widget.phoneNumber,
+                style: TextStyle(fontSize: 17),
+              )
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

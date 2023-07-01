@@ -7,13 +7,15 @@ class DataBaseService {
       FirebaseFirestore.instance.collection("users");
   final CollectionReference groupCollection =
       FirebaseFirestore.instance.collection("groups");
-  Future<void> updataUserData(String fullName, String email) async {
+  Future<void> updataUserData(
+      String fullName, String email, String Phone) async {
     await userCollection.doc(uid).set({
       "fullName": fullName,
       "email": email,
       "groups": [],
       "profilePic": "",
       "uid": uid,
+      "PhoneNumber": Phone,
     });
   }
 
@@ -21,5 +23,9 @@ class DataBaseService {
     QuerySnapshot snapshot =
         await userCollection.where("email", isEqualTo: email).get();
     return snapshot;
+  }
+
+  GetUserGroup() async {
+    return await userCollection.doc(uid).snapshots();
   }
 }
