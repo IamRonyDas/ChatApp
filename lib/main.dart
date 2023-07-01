@@ -23,11 +23,17 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    getUserLoggedInStatus();
   }
 
   getUserLoggedInStatus() async {
     await HelperFunctions.getUserLoggedInStatus().then((value) => {
-          if (value != null) {_isSingedIn = value}
+          if (value != null)
+            {
+              setState(() {
+                _isSingedIn = value;
+              }),
+            }
         });
   }
 

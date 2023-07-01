@@ -1,6 +1,13 @@
+import 'package:chatapp/helper/helper_function.dart';
+import 'package:chatapp/pages/HomePage.dart';
 import 'package:chatapp/pages/auth/register_page.dart';
+import 'package:chatapp/service/auth_service.dart';
+import 'package:chatapp/service/database_service.dart';
 import 'package:chatapp/shared/constants.dart';
 import 'package:chatapp/widgets/Widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +19,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _success = true;
   final formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   String email = "";
   String password = "";
+  AuthService authService = new AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,11 +104,17 @@ class _LoginPageState extends State<LoginPage> {
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
-                  child: const Text(
-                    "Sign in",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  onPressed: () {},
+                  child: _success == true
+                      ? Text(
+                          "Sign in",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        )
+                      : CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                  onPressed: () {
+                    login();
+                  },
                 ),
               ),
               const SizedBox(
@@ -121,5 +137,38 @@ class _LoginPageState extends State<LoginPage> {
             ],
           )),
     )));
+  }
+
+  Future<void> login() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        _success = false;
+        _isLoading = true;
+      });
+
+      bool success = await authService.LoginWithEmailAndPassword(
+        email,
+        password,
+      );
+
+      if (success) {
+        // HomePage
+        QuerySnapshot snapshot =
+            await DataBaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+                .GettingUserData(email);
+        await HelperFunctions.SaveUserLoggedInStatus(true);
+        await HelperFunctions.SaveUserName(snapshot.docs[0]['fullName']);
+        await HelperFunctions.SaveUserEmail(email);
+        nextScreenReplace(context, HomePage());
+        // Registration successful, handle the next steps
+      } else {
+        showsnackbar(context, Colors.red, success);
+      }
+
+      setState(() {
+        _success = false;
+        _isLoading = false;
+      });
+    }
   }
 }
