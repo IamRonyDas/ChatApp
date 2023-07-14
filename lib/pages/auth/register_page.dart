@@ -189,22 +189,22 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _isLoading = true;
       });
-
-      bool success = await authService.registerUserWithEmailandPassword(
-          fullName, email, password, PhoneNumber);
-
-      if (success) {
-        // HomePage
-        await HelperFunctions.SaveUserLoggedInStatus(true);
-        await HelperFunctions.SaveUserName(fullName);
-        await HelperFunctions.SaveUserEmail(email);
-        await HelperFunctions.SaveUserPhone(PhoneNumber);
-        nextScreenReplace(context, HomePage());
-        // Registration successful, handle the next steps
-      } else {
-        showsnackbar(context, Colors.red, "Registration failed");
-      }
-
+      await authService
+          .registerUserWithEmailandPassword(
+              fullName, email, password, PhoneNumber)
+          .then((value) async {
+        if (value) {
+          // HomePage
+          await HelperFunctions.SaveUserLoggedInStatus(true);
+          await HelperFunctions.SaveUserName(fullName);
+          await HelperFunctions.SaveUserEmail(email);
+          await HelperFunctions.SaveUserPhone(PhoneNumber);
+          nextScreenReplace(context, HomePage());
+          // Registration successful, handle the next steps
+        } else {
+          showsnackbar(context, Colors.red, value);
+        }
+      });
       setState(() {
         _isLoading = false;
       });

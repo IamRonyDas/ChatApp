@@ -7,7 +7,6 @@ import 'package:chatapp/shared/constants.dart';
 import 'package:chatapp/widgets/Widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -21,27 +20,26 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _success = true;
   final formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   String email = "";
   String password = "";
-  AuthService authService = new AuthService();
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 70),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
       child: Form(
           key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Groupie",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               const Text(
@@ -69,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                       : "Please enter a valid email";
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               TextFormField(
@@ -100,16 +98,16 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      primary: Constants().primaryColor,
+                      backgroundColor: Constants().primaryColor,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                   child: _success == true
-                      ? Text(
+                      ? const Text(
                           "Sign in",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         )
-                      : CircularProgressIndicator(
+                      : const CircularProgressIndicator(
                           color: Colors.white,
                         ),
                   onPressed: () {
@@ -126,12 +124,12 @@ class _LoginPageState extends State<LoginPage> {
                   children: <TextSpan>[
                     TextSpan(
                         text: "Register here",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             decoration: TextDecoration.underline),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            nextScreen(context, RegisterPage());
+                            nextScreen(context, const RegisterPage());
                           })
                   ])),
             ],
@@ -143,7 +141,6 @@ class _LoginPageState extends State<LoginPage> {
     if (formKey.currentState!.validate()) {
       setState(() {
         _success = false;
-        _isLoading = true;
       });
 
       bool success = await authService.LoginWithEmailAndPassword(
@@ -160,15 +157,16 @@ class _LoginPageState extends State<LoginPage> {
         await HelperFunctions.SaveUserName(snapshot.docs[0]['fullName']);
         await HelperFunctions.SaveUserEmail(email);
         await HelperFunctions.SaveUserPhone(snapshot.docs[0]['PhoneNumber']);
-        nextScreenReplace(context, HomePage());
+        // ignore: use_build_context_synchronously
+        nextScreenReplace(context, const HomePage());
         // Registration successful, handle the next steps
       } else {
+        // ignore: use_build_context_synchronously
         showsnackbar(context, Colors.red, success);
       }
 
       setState(() {
         _success = false;
-        _isLoading = false;
       });
     }
   }

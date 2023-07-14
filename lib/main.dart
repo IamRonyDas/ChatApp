@@ -4,10 +4,19 @@ import 'package:chatapp/pages/auth/login_page.dart';
 import 'package:chatapp/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: Constants.apiKey,
+            appId: Constants.appId,
+            messagingSenderId: Constants.measurementId,
+            projectId: Constants.projectId));
+  } else
+    await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
