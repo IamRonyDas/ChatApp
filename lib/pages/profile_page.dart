@@ -179,7 +179,7 @@ class _Profile_pageState extends State<Profile_page> {
                             ),
                           ),
                         ],
-                      );
+                      );  
                     });
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),

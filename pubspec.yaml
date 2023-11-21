@@ -42,6 +42,10 @@ dependencies:
   permission_handler: ^10.4.3
   shared_preferences: ^2.1.2
   share: ^2.0.4
+  camera: ^0.10.5+4
+  firebase_storage: ^11.2.6
+  path_provider: ^2.1.1
+  video_player: ^2.7.1
 
 dev_dependencies:
   flutter_lints: ^2.0.0

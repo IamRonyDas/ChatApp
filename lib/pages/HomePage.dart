@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:chatapp/helper/helper_function.dart';
+import 'package:chatapp/pages/Addvedio.dart';
 import 'package:chatapp/pages/InviteUser.dart';
 import 'package:chatapp/pages/Search_page.dart';
 import 'package:chatapp/pages/auth/login_page.dart';
@@ -251,11 +252,14 @@ class _HomePageState extends State<HomePage> {
         width: 80,
         child: FloatingActionButton(
             onPressed: () {
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //       builder: (context) => ContactListPage(
+              //             UserName: name,
+              //           )),
+              // );
               Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => ContactListPage(
-                          UserName: name,
-                        )),
+                MaterialPageRoute(builder: (context) => VideoRecordingScreen()),
               );
               // popupDailog(context);
             },
